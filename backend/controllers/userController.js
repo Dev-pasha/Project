@@ -6,7 +6,7 @@ exports.register = async (req, res) => {
     const { name, email, password } = req.body;
     let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({
+      return res.status(403).json({
         success: false,
         message: "User already exists",
       });
@@ -52,7 +52,7 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "User does not exisist",
       });
@@ -60,7 +60,7 @@ exports.loginUser = async (req, res) => {
 
     const passMatched = await user.matchPassword(password);
     if (!passMatched) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Incorrect password",
       });
@@ -282,7 +282,7 @@ exports.deleteProfile = async (req, res) => {
 
 exports.getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).populate("posts");
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -307,7 +307,7 @@ exports.getUsers = async (req, res) => {
     const users = await User.find();
     res.status(200).json({
       success: true,
-      users,
+      user:users,
     });
   } catch (err) {
     res.status(502).json({
@@ -322,7 +322,7 @@ exports.myProfile = async (req, res) => {
     const user = await User.findById(req.user._id);
     res.status(200).json({
       success: true,
-      user,
+      user: user,
     });
   } catch (err) {
     res.status(502).json({

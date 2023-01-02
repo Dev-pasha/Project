@@ -7,7 +7,7 @@ const router = express.Router();
 
 // controllers export conncetion to database
 router.route('/post/upload').post(isauthenticated, createPost);
-router.route('/post/:id').post(isauthenticated, likeUnlikePost).put(isauthenticated,updatepost).delete(isauthenticated, deletePost);
+router.route('/post/:id').get(isauthenticated, likeUnlikePost).put(isauthenticated,updatepost).delete(isauthenticated, deletePost);
 router.route('/posts').get(isauthenticated, getPostOftheFollowingUsers);
 
 
